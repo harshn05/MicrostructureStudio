@@ -22,10 +22,8 @@ Microstructure Studio couples a cross-platform-style .NET desktop UI with a stan
 
 ## Screenshot
 
-```text
-docs/screenshots/
-    screenshot.png
-```
+![Microstructure Studio](docs/screenshot.png)
+
 
 ## Architecture
 
