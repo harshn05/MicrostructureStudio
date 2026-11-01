@@ -1,0 +1,35 @@
+# .NET
+**/bin/
+**/obj/
+*.user
+*.suo
+*.cache
+
+# CMake / native build output
+/build*/
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+compile_commands.json
+*.obj
+*.o
+*.ilk
+*.exp
+*.lib
+*.a
+*.pdb
+*.idb
+
+# Published applications and archives
+publish/
+dotnet_publish/
+artifacts/
+*.7z
+*.zip
+
+# IDE / OS
+.vs/
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
