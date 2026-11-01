@@ -52,19 +52,19 @@ The native library does not depend on Avalonia or .NET. This separation is inten
 
 ## Mathematical model
 
-For a domain of area \(A\), nucleation rate \(\lambda\), and time increment \(\Delta t\), the number of new nuclei is sampled from a Poisson distribution:
+For a domain of area $A$, nucleation rate $\lambda$, and time increment $\Delta t$, the number of new nuclei is sampled from a Poisson distribution:
 
 $$
-N_{\mathrm{new}} \sim \operatorname{Poisson}(\lambda A \Delta t)
+N_{\mathrm{new}} \sim \mathrm{Poisson}(\lambda A \Delta t)
 $$
 
-A nucleus \(i\), born at position \((x_i,y_i)\) at time \(t_i\), grows at constant radial velocity \(v_i\):
+A nucleus $i$, born at position $(x_i,y_i)$ at time $t_i$, grows at constant radial velocity $v_i$:
 
 $$
 R_i(t) = v_i(t-t_i)
 $$
 
-The arrival time at a point \((x,y)\) is:
+The arrival time at a point $(x,y)$ is:
 
 $$
 \tau_i(x,y) = t_i + \frac{\sqrt{(x-x_i)^2+(y-y_i)^2}}{v_i}
@@ -73,7 +73,7 @@ $$
 The grain with the earliest arrival time owns that point:
 
 $$
-G(x,y) = \underset{i}{\operatorname{argmin}}\;\tau_i(x,y)
+G(x,y) = \underset{i}{\mathrm{arg\,min}} \; \tau_i(x,y)
 $$
 
 The engine samples the continuous model at pixel centres and updates the newly swept annulus of each grain. See [docs/mathematical-model.md](docs/mathematical-model.md) for assumptions and limitations.
