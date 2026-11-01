@@ -20,6 +20,13 @@ Microstructure Studio couples a cross-platform-style .NET desktop UI with a stan
 
 **OpenMP is not implemented in this version.** The simulation and renderer currently run serially in the native engine.
 
+## Screenshot
+
+```text
+docs/screenshots/
+    screenshot.png
+```
+
 ## Architecture
 
 ```text
