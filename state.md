@@ -171,17 +171,16 @@ continuous growth model is sampled at pixel centres.
 
 Let:
 
--   \(A\) be the simulation-domain area,
--   (`\lambda`{=tex}) be the nucleation rate per unit area per unit
-    time,
--   (`\Delta `{=tex}t) be the simulation time increment.
+-   $A$ be the simulation-domain area,
+-   $\lambda$ be the nucleation rate per unit area per unit time,
+-   $\Delta t$ be the simulation time increment.
 
 The number of nuclei generated during a step is sampled from a Poisson
 distribution:
 
-\[ N\_{`\mathrm{new}`{=tex}}
-`\sim `{=tex}`\operatorname{Poisson}`{=tex}(`\lambda `{=tex}A
-`\Delta `{=tex}t) \]
+$$
+N_{new} \sim \text{Poisson}(\lambda A \Delta t)
+$$
 
 In the implementation, the expected number is computed as:
 
@@ -205,20 +204,23 @@ pixel-based domain used by the application.
 
 The README default is:
 
-\[ `\lambda `{=tex}= 0.000012
-`\quad `{=tex}`\text{nuclei/pixel/s}`{=tex} \]
+$$
+\lambda = 0.000012 \quad \text{nuclei/pixel/s}
+$$
 
 ## 2.2 Isotropic radial growth
 
 A grain (i) is characterised by:
 
--   Centre ((x_i,y_i)).
--   Birth time (t_i).
--   Constant radial velocity (v_i).
+-   Centre $(x_i,y_i)$.
+-   Birth time $t_i$.
+-   Constant radial velocity $v_i$.
 
-Its ideal radius at simulation time (t) is:
+Its ideal radius at simulation time $t$ is:
 
-\[ R_i(t)=v_i(t-t_i) \]
+$$
+R_i(t)=v_i(t-t_i)
+$$
 
 This is circular growth in two dimensions. The current implementation
 does not introduce crystallographic anisotropy, curvature-dependent
@@ -226,11 +228,12 @@ velocity, elastic effects, solute diffusion, or thermal fields.
 
 ## 2.3 Arrival-time field
 
-For a point ((x,y)), the arrival time of grain (i) is the time at which
+For a point $(x,y)$, the arrival time of grain $i$ is the time at which
 its radial front reaches that point:
 
-\[ `\tau`{=tex}\_i(x,y)=t_i+
-`\frac{\sqrt{(x-x_i)^2+(y-y_i)^2}}{v_i}`{=tex} \]
+$$
+\tau_i(x,y)=t_i+\frac{\sqrt{(x-x_i)^2+(y-y_i)^2}}{v_i}
+$$
 
 The arrival-time expression combines nucleation history and growth
 speed. A grain born earlier has a head start; a faster grain reaches
@@ -241,11 +244,15 @@ determined by distance to the nearest nucleus alone.
 
 The owner of a point is the grain with the smallest arrival time:
 
-\[ G(x,y)=`\underset{i}{\arg\min}`{=tex} `\tau`{=tex}\_i(x,y) \]
+$$
+G(x,y)=\arg\min_{i} \tau_i(x,y)
+$$
 
 The engine evaluates this competition at pixel centres:
 
-\[ (x+0.5, y+0.5) \]
+$$
+(x+0.5,\ y+0.5)
+$$
 
 It stores an owner index and the best arrival time for each pixel. When
 a grain reaches a pixel with an arrival time smaller than the currently
@@ -301,8 +308,9 @@ Coverage is calculated from `transformedPixels`, which counts the number
 of pixels that have been assigned to any grain at least once. It is
 divided by the total number of pixels in the owner array:
 
-\[ `\text{Coverage}`{=tex}= `\frac{\text{transformedPixels}}{w h}`{=tex}
-\]
+$$
+\text{Coverage}=\frac{\text{transformedPixels}}{wh}
+$$
 
 It is therefore a measure of whether the domain has been reached by at
 least one grain, not a count of pixels currently owned by a particular
@@ -1047,7 +1055,7 @@ Incremental changes keep the validation surface small.
                                       reference implementation on small
                                       grids
 
-  Coverage                            Coverage remains in \[0,1\], is
+  Coverage                            Coverage remains in $[0,1]$, is
                                       monotonic under
                                       first-transformation counting, and
                                       reaches 1 only when every pixel has
@@ -1190,8 +1198,8 @@ These are demonstration values, not calibrated material parameters.
 -   The UI currently restricts each dimension to 64--4096.
 -   Native `ms_step` ignores non-finite or non-positive `dt` and caps
     `dt` at 0.25 seconds.
--   Nucleation rate is clamped to \[0, 0.001\].
--   Minimum velocity is clamped to \[0.1, 10000\].
+-   Nucleation rate is clamped to $[0, 0.001]$.
+-   Minimum velocity is clamped to $[0.1, 10000]$.
 -   Maximum velocity is clamped to at least the current minimum and at
     most 10000.
 
