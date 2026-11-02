@@ -36,6 +36,8 @@ struct Sim
     std::mt19937 rng;
 
     std::vector<Grain> grains;
+    std::vector<std::size_t> activeGrains;
+    std::vector<double> grainMaxReach;
     std::vector<int> owner;
     std::vector<double> arrival;
 
@@ -52,6 +54,8 @@ struct Sim
     {
         t = 0.0;
         grains.clear();
+        activeGrains.clear();
+        grainMaxReach.clear();
 
         std::fill(owner.begin(), owner.end(), -1);
         std::fill(arrival.begin(), arrival.end(), std::numeric_limits<double>::infinity());
@@ -144,16 +148,40 @@ struct Sim
                     std::clamp((value + m) * 255.0, 0.0, 255.0));
             };
 
-            grains.push_back({xd(rng), yd(rng), bd(rng), vd(rng), toByte(R), toByte(G), toByte(B)});
+            const double grainX = xd(rng);
+            const double grainY = yd(rng);
+            const double birthTime = bd(rng);
+            const double velocity = vd(rng);
+
+            const std::size_t id = grains.size();
+
+            grains.push_back(
+                {grainX, grainY, birthTime, velocity, toByte(R), toByte(G), toByte(B)});
+
+            // Maximum distance from the grain centre to any pixel centre in the domain.
+            const double maxDx = std::max(std::abs(0.5 - grainX),
+                                          std::abs((w - 0.5) - grainX));
+            const double maxDy = std::max(std::abs(0.5 - grainY),
+                                          std::abs((h - 0.5) - grainY));
+            const double maxReach = std::hypot(maxDx, maxDy);
+
+            // Store the grain index and its domain-wide reach threshold separately.
+            activeGrains.push_back(id);
+            grainMaxReach.push_back(maxReach);
         }
 
-        // Update grain growth and pixel ownership.
-        for (std::size_t id = 0; id < grains.size(); ++id)
+        // Update only grains whose growth fronts have not crossed the full domain.
+        std::size_t activeWriteIndex = 0;
+
+        for (const std::size_t id : activeGrains)
         {
             const auto& grain = grains[id];
 
             if (now <= grain.birth)
+            {
+                activeGrains[activeWriteIndex++] = id;
                 continue;
+            }
 
             const double innerRadius =
                 std::max(0.0, (std::max(old, grain.birth) - grain.birth) * grain.v);
@@ -193,7 +221,14 @@ struct Sim
                     }
                 }
             }
+
+            // Once the front has reached every pixel centre, this grain cannot
+            // contribute any new arrival-time candidates in subsequent steps.
+            if (outerRadius < grainMaxReach[id])
+                activeGrains[activeWriteIndex++] = id;
         }
+
+        activeGrains.resize(activeWriteIndex);
 
         t = now;
     }
