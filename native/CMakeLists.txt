@@ -31,6 +31,7 @@ if(MSVC)
         PRIVATE
             /W4
             /permissive-
+            /EHsc
     )
 
 elseif(MINGW)
