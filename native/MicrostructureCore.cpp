@@ -39,6 +39,9 @@ struct Sim
     std::vector<int> owner;
     std::vector<double> arrival;
 
+    // Number of pixels that have been assigned to a grain at least once.
+    std::size_t transformedPixels = 0;
+
     Sim(int W, int H, unsigned seed)
         : w(W), h(H), rng(seed), owner(static_cast<std::size_t>(W) * H, -1),
           arrival(static_cast<std::size_t>(W) * H, std::numeric_limits<double>::infinity())
@@ -48,12 +51,12 @@ struct Sim
     void reset(unsigned seed)
     {
         t = 0.0;
-
         grains.clear();
 
         std::fill(owner.begin(), owner.end(), -1);
-
         std::fill(arrival.begin(), arrival.end(), std::numeric_limits<double>::infinity());
+
+        transformedPixels = 0;
 
         rng.seed(seed);
     }
@@ -63,10 +66,7 @@ struct Sim
         if (owner.empty())
             return 0.0;
 
-        const auto transformed =
-            std::count_if(owner.begin(), owner.end(), [](int id) { return id >= 0; });
-
-        return static_cast<double>(transformed) / static_cast<double>(owner.size());
+        return static_cast<double>(transformedPixels) / static_cast<double>(owner.size());
     }
 
     void step(double dt)
@@ -87,7 +87,6 @@ struct Sim
         const double expectedNuclei = std::clamp(rate * w * h * dt, 0.0, 10000.0);
 
         std::poisson_distribution<int> poisson(expectedNuclei);
-
         const int newNuclei = poisson(rng);
 
         std::uniform_real_distribution<double> xd(0.0, w);
@@ -100,11 +99,8 @@ struct Sim
         for (int k = 0; k < newNuclei; ++k)
         {
             const double hue = hd(rng);
-
             const double c = 0.95 * 0.68;
-
             const double x = c * (1.0 - std::abs(std::fmod(hue / 60.0, 2.0) - 1.0));
-
             const double m = 0.95 - c;
 
             double R = 0.0;
@@ -143,7 +139,10 @@ struct Sim
             }
 
             const auto toByte = [m](double value)
-            { return static_cast<std::uint8_t>(std::clamp((value + m) * 255.0, 0.0, 255.0)); };
+            {
+                return static_cast<std::uint8_t>(
+                    std::clamp((value + m) * 255.0, 0.0, 255.0));
+            };
 
             grains.push_back({xd(rng), yd(rng), bd(rng), vd(rng), toByte(R), toByte(G), toByte(B)});
         }
@@ -158,24 +157,20 @@ struct Sim
 
             const double innerRadius =
                 std::max(0.0, (std::max(old, grain.birth) - grain.birth) * grain.v);
-
             const double outerRadius = (now - grain.birth) * grain.v;
 
             const int y0 = std::max(0, static_cast<int>(std::floor(grain.y - outerRadius)));
-
             const int y1 = std::min(h - 1, static_cast<int>(std::ceil(grain.y + outerRadius)));
 
             for (int y = y0; y <= y1; ++y)
             {
                 const int x0 = std::max(0, static_cast<int>(std::floor(grain.x - outerRadius)));
-
                 const int x1 = std::min(w - 1, static_cast<int>(std::ceil(grain.x + outerRadius)));
 
                 for (int x = x0; x <= x1; ++x)
                 {
                     const double dx = x + 0.5 - grain.x;
                     const double dy = y + 0.5 - grain.y;
-
                     const double distanceSquared = dx * dx + dy * dy;
 
                     if (distanceSquared <= innerRadius * innerRadius ||
@@ -185,11 +180,14 @@ struct Sim
                     }
 
                     const double arrivalTime = grain.birth + std::sqrt(distanceSquared) / grain.v;
-
                     const std::size_t pixel = static_cast<std::size_t>(y) * w + x;
 
                     if (arrivalTime < arrival[pixel])
                     {
+                        // Count a pixel only when it is transformed for the first time.
+                        if (owner[pixel] == -1)
+                            ++transformedPixels;
+
                         arrival[pixel] = arrivalTime;
                         owner[pixel] = static_cast<int>(id);
                     }
@@ -210,9 +208,7 @@ struct Sim
             for (int x = 0; x < w; ++x)
             {
                 const std::size_t pixel = static_cast<std::size_t>(y) * w + x;
-
                 const int grainId = owner[pixel];
-
                 auto* q = dst + static_cast<std::size_t>(y) * stride + x * 4;
 
                 std::uint8_t r = 17;
@@ -235,7 +231,6 @@ struct Sim
                     else
                     {
                         const auto& grain = grains[grainId];
-
                         r = grain.r;
                         g = grain.g;
                         b = grain.b;
