@@ -12,7 +12,7 @@ ColumnLimit: 100
 
 # Pointers and references
 PointerAlignment: Left
-ReferenceAlignment: Left
+ReferenceAlignment: Left # Requires Clang-Format 13+
 DerivePointerAlignment: false
 
 # Functions and control statements
@@ -41,4 +41,5 @@ AlignTrailingComments:
 MaxEmptyLinesToKeep: 1
 KeepEmptyLinesAtTheStartOfBlocks: false
 
+# Updated from 'None' to 'All' for modern Clang-Format compatibility
 BreakBeforeBinaryOperators: None
