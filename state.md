@@ -9,9 +9,9 @@ title: Microstructure Studio
 
 ## A technical guide to the current simulation engine, mathematical model, software architecture and development workflow
 
-**Edition 1**\
-**Repository baseline:** `main`\
-**Commit:** `cfeb335067d62e0817c09cce010e6a4152f7c4f6`\
+**Edition 1**  
+**Repository baseline:** `main`  
+**Commit:** `cfeb335067d62e0817c09cce010e6a4152f7c4f6`  
 **Documentation date:** 03 November 2026
 
 > This book documents the repository at the stated commit. It describes
@@ -75,19 +75,17 @@ interactive desktop application.
 
 The current repository implements:
 
--   Continuous stochastic nucleation using a Poisson process.
--   Isotropic circular growth with a configurable random velocity
-    interval.
--   Kinetic Voronoi-like ownership based on earliest arrival time.
--   Per-grain colour assignment and pixel-level grain-boundary
-    rendering.
--   Live simulation controls, time, grain count and area coverage.
--   A native C++ engine exposed through a small C ABI and consumed
-    through C# P/Invoke.
--   CMake build support for MSVC and MinGW-w64.
--   Self-contained .NET publishing for Windows x64.
--   Static compiler-runtime linking options for native Windows
-    deployment.
+- Continuous stochastic nucleation using a Poisson process.
+- Isotropic circular growth with a configurable random velocity
+  interval.
+- Kinetic Voronoi-like ownership based on earliest arrival time.
+- Per-grain colour assignment and pixel-level grain-boundary rendering.
+- Live simulation controls, time, grain count and area coverage.
+- A native C++ engine exposed through a small C ABI and consumed through
+  C# P/Invoke.
+- CMake build support for MSVC and MinGW-w64.
+- Self-contained .NET publishing for Windows x64.
+- Static compiler-runtime linking options for native Windows deployment.
 
 ## 1.2 What the current version is not
 
@@ -97,45 +95,27 @@ engine.
 
 The current model is **not**:
 
--   A curvature-driven grain-boundary migration model.
--   A phase-field model.
--   A crystallographic anisotropic growth model.
--   A 3D microstructure simulation.
+- A curvature-driven grain-boundary migration model.
+- A phase-field model.
+- A crystallographic anisotropic growth model.
+- A 3D microstructure simulation.
 
 These distinctions matter when interpreting the generated
 microstructures or comparing them with experimental materials.
 
 ## 1.3 Repository map
 
-  -----------------------------------------------------------------------
-  Path                                Responsibility
-  ----------------------------------- -----------------------------------
-  `README.md`                         Project overview, features,
-                                      requirements, build instructions,
-                                      defaults and roadmap
-
-  `CMakeLists.txt`                    Top-level CMake configuration and
-                                      managed publish target
-
-  `native/`                           C++17 simulation library and
-                                      exported C API
-
-  `managed/`                          Avalonia UI, application startup
-                                      and P/Invoke declarations
-
-  `docs/architecture.md`              Native/managed architecture and
-                                      memory ownership
-
-  `docs/mathematical-model.md`        Mathematical description and model
-                                      characteristics
-
-  `scripts/`                          MSVC and MinGW configure/build/run
-                                      helpers
-
-  `LICENSE`                           Project MIT licence
-
-  `THIRD-PARTY-NOTICES.md`            Third-party notices
-  -----------------------------------------------------------------------
+| Path                         | Responsibility                                                                     |
+|:-----------------------------|:-----------------------------------------------------------------------------------|
+| `README.md`                  | Project overview, features, requirements, build instructions, defaults and roadmap |
+| `CMakeLists.txt`             | Top-level CMake configuration and managed publish target                           |
+| `native/`                    | C++17 simulation library and exported C API                                        |
+| `managed/`                   | Avalonia UI, application startup and P/Invoke declarations                         |
+| `docs/architecture.md`       | Native/managed architecture and memory ownership                                   |
+| `docs/mathematical-model.md` | Mathematical description and model characteristics                                 |
+| `scripts/`                   | MSVC and MinGW configure/build/run helpers                                         |
+| `LICENSE`                    | Project MIT licence                                                                |
+| `THIRD-PARTY-NOTICES.md`     | Third-party notices                                                                |
 
 ## 1.4 High-level architecture
 
@@ -171,9 +151,9 @@ continuous growth model is sampled at pixel centres.
 
 Let:
 
--   $A$ be the simulation-domain area,
--   $\lambda$ be the nucleation rate per unit area per unit time,
--   $\Delta t$ be the simulation time increment.
+- $A$ be the simulation-domain area,
+- $\lambda$ be the nucleation rate per unit area per unit time,
+- $\Delta t$ be the simulation time increment.
 
 The number of nuclei generated during a step is sampled from a Poisson
 distribution:
@@ -193,11 +173,11 @@ The expected value is clamped to a maximum of 10,000 and passed to
 
 New nuclei are assigned:
 
--   A random x position.
--   A random y position.
--   A random birth time within the current interval.
--   A random growth velocity between the configured minimum and maximum.
--   A colour derived from a random hue.
+- A random x position.
+- A random y position.
+- A random birth time within the current interval.
+- A random growth velocity between the configured minimum and maximum.
+- A colour derived from a random hue.
 
 The nucleation rate is expressed in nuclei / pixel / second for the
 pixel-based domain used by the application.
@@ -212,9 +192,9 @@ $$
 
 A grain (i) is characterised by:
 
--   Centre $(x_i,y_i)$.
--   Birth time $t_i$.
--   Constant radial velocity $v_i$.
+- Centre $(x_i,y_i)$.
+- Birth time $t_i$.
+- Constant radial velocity $v_i$.
 
 Its ideal radius at simulation time $t$ is:
 
@@ -265,15 +245,15 @@ accounting for grain impingement. In practical terms, a pixel is
 assigned to the grain whose arrival-time function wins at that location.
 
 The current implementation does **not** model a moving interface that
-physically collides and then blocks a grain's front from travelling
+physically collides and then blocks a grain’s front from travelling
 through neighbouring grain regions.
 
 This distinction is central to any future alternative growth model:
 
--   In the current kinetic Voronoi-like model, each grain's arrival-time
-    field competes for every pixel.
--   In an explicitly impingement-limited model, collision of growth
-    fronts would constrain subsequent propagation.
+- In the current kinetic Voronoi-like model, each grain’s arrival-time
+  field competes for every pixel.
+- In an explicitly impingement-limited model, collision of growth fronts
+  would constrain subsequent propagation.
 
 These are different modelling assumptions and should be represented as
 separate selectable models if both are required.
@@ -284,7 +264,7 @@ For each time step, the engine considers the newly swept radial band
 between an inner and outer radius.
 
 The inner radius is based on the later of the previous simulation time
-and the grain's birth time. The outer radius is based on the new
+and the grain’s birth time. The outer radius is based on the new
 simulation time.
 
 ``` cpp
@@ -319,7 +299,7 @@ grain.
 Since ownership may later change when an earlier arrival is discovered,
 the counter is deliberately not decremented.
 
-This distinction is important: the simulation's completion check is
+This distinction is important: the simulation’s completion check is
 based on first transformation of the full raster domain.
 
 ------------------------------------------------------------------------
@@ -384,31 +364,17 @@ struct Sim
 
 The arrays have the following meanings:
 
-  -----------------------------------------------------------------------
-  Member                              Meaning
-  ----------------------------------- -----------------------------------
-  `w`, `h`                            Raster dimensions
-
-  `t`                                 Current simulation time
-
-  `rate`                              Nucleation rate
-
-  `vmin`, `vmax`                      Velocity interval
-
-  `rng`                               Per-simulation random-number
-                                      generator
-
-  `grains`                            All nucleated grains
-
-  `owner`                             Grain index currently owning each
-                                      pixel; `-1` means untransformed
-
-  `arrival`                           Best known arrival time for each
-                                      pixel
-
-  `transformedPixels`                 Number of pixels assigned at least
-                                      once
-  -----------------------------------------------------------------------
+| Member              | Meaning                                                           |
+|:--------------------|:------------------------------------------------------------------|
+| `w`, `h`            | Raster dimensions                                                 |
+| `t`                 | Current simulation time                                           |
+| `rate`              | Nucleation rate                                                   |
+| `vmin`, `vmax`      | Velocity interval                                                 |
+| `rng`               | Per-simulation random-number generator                            |
+| `grains`            | All nucleated grains                                              |
+| `owner`             | Grain index currently owning each pixel; `-1` means untransformed |
+| `arrival`           | Best known arrival time for each pixel                            |
+| `transformedPixels` | Number of pixels assigned at least once                           |
 
 The `owner` array contains one integer per pixel. A value of `-1`
 indicates that no grain has yet transformed that pixel.
@@ -445,7 +411,7 @@ A native simulation step follows this sequence:
 6.  Create each new grain with random position, birth time, velocity and
     colour.
 7.  Iterate over all grains and compute the newly swept annulus.
-8.  Scan candidate pixels inside the grain's clipped bounding box.
+8.  Scan candidate pixels inside the grain’s clipped bounding box.
 9.  Update arrival time and owner when the candidate arrival is earlier.
 10. Advance the simulation clock.
 
@@ -483,11 +449,11 @@ Rendering is performed by `Sim::render`.
 
 The caller supplies a destination buffer and row stride.
 
--   Untransformed pixels receive a dark background colour.
--   Transformed pixels are coloured using their owning grain's stored
-    RGB value.
--   Pixels adjacent to a different owner in the four cardinal directions
-    are rendered in a dark boundary colour.
+- Untransformed pixels receive a dark background colour.
+- Transformed pixels are coloured using their owning grain’s stored RGB
+  value.
+- Pixels adjacent to a different owner in the four cardinal directions
+  are rendered in a dark boundary colour.
 
 The renderer writes RGBA bytes and checks that the destination pointer
 and stride are valid.
@@ -509,36 +475,17 @@ containers or compiler-specific object layouts to the C# application.
 
 The current API in `native/MicrostructureCore.h` is:
 
-  --------------------------------------------------------------------------------
-  Function                                     Purpose
-  -------------------------------------------- -----------------------------------
-  `ms_create(w, h, seed)`                      Allocate a simulation object and
-                                               its pixel arrays; return an opaque
-                                               handle or null
-
-  `ms_destroy(sim)`                            Destroy the native simulation
-                                               object
-
-  `ms_reset(sim, seed)`                        Reset simulation state and reseed
-                                               the random generator
-
-  `ms_set_parameters(sim, rate, minV, maxV)`   Set nucleation rate and velocity
-                                               limits, with native
-                                               validation/clamping
-
-  `ms_step(sim, dt)`                           Advance the simulation by a time
-                                               increment
-
-  `ms_render_rgba(sim, dst, stride)`           Render the current state into a
-                                               caller-owned RGBA buffer
-
-  `ms_get_nucleus_count(sim)`                  Return the number of grains
-                                               currently in the grain vector
-
-  `ms_get_simulation_time(sim)`                Return the current simulation time
-
-  `ms_get_coverage(sim)`                       Return transformed-pixel coverage
-  --------------------------------------------------------------------------------
+| Function                                   | Purpose                                                                            |
+|:-------------------------------------------|:-----------------------------------------------------------------------------------|
+| `ms_create(w, h, seed)`                    | Allocate a simulation object and its pixel arrays; return an opaque handle or null |
+| `ms_destroy(sim)`                          | Destroy the native simulation object                                               |
+| `ms_reset(sim, seed)`                      | Reset simulation state and reseed the random generator                             |
+| `ms_set_parameters(sim, rate, minV, maxV)` | Set nucleation rate and velocity limits, with native validation/clamping           |
+| `ms_step(sim, dt)`                         | Advance the simulation by a time increment                                         |
+| `ms_render_rgba(sim, dst, stride)`         | Render the current state into a caller-owned RGBA buffer                           |
+| `ms_get_nucleus_count(sim)`                | Return the number of grains currently in the grain vector                          |
+| `ms_get_simulation_time(sim)`              | Return the current simulation time                                                 |
+| `ms_get_coverage(sim)`                     | Return transformed-pixel coverage                                                  |
 
 ## 4.2 Memory ownership
 
@@ -549,10 +496,10 @@ locked pixel-buffer address to the native renderer.
 
 The architecture documentation specifies:
 
--   The simulation object is owned by the managed application and must
-    be destroyed once.
--   The caller owns the destination RGBA buffer.
--   The native renderer writes into that caller-owned memory.
+- The simulation object is owned by the managed application and must be
+  destroyed once.
+- The caller owns the destination RGBA buffer.
+- The native renderer writes into that caller-owned memory.
 
 This is a simple ownership contract, but it must be respected during
 window shutdown and simulation recreation.
@@ -609,42 +556,28 @@ the native simulation and bitmap buffer.
 
 The current UI is defined in:
 
--   `managed/MainWindow.axaml`
--   `managed/MainWindow.axaml.cs`
+- `managed/MainWindow.axaml`
+- `managed/MainWindow.axaml.cs`
 
 It uses a dark interface with a left-side control panel and a large
 simulation viewport.
 
 ## 5.1 Controls and defaults
 
-  -----------------------------------------------------------------------
-  Control                             Current default / behaviour
-  ----------------------------------- -----------------------------------
-  Domain X                            800 pixels
+| Control          | Current default / behaviour                                        |
+|:-----------------|:-------------------------------------------------------------------|
+| Domain X         | 800 pixels                                                         |
+| Domain Y         | 600 pixels                                                         |
+| Nucleation rate  | 0.000012 nuclei/pixel/s                                            |
+| Minimum velocity | 35 px/s                                                            |
+| Maximum velocity | 65 px/s                                                            |
+| Apply resolution | Creates a new native simulation and bitmap                         |
+| Apply parameters | Validates and updates rate and velocity bounds                     |
+| Start / Pause    | Starts or pauses timer-driven simulation                           |
+| Reset            | Clears the current simulation and creates a new random realisation |
 
-  Domain Y                            600 pixels
-
-  Nucleation rate                     0.000012 nuclei/pixel/s
-
-  Minimum velocity                    35 px/s
-
-  Maximum velocity                    65 px/s
-
-  Apply resolution                    Creates a new native simulation and
-                                      bitmap
-
-  Apply parameters                    Validates and updates rate and
-                                      velocity bounds
-
-  Start / Pause                       Starts or pauses timer-driven
-                                      simulation
-
-  Reset                               Clears the current simulation and
-                                      creates a new random realisation
-  -----------------------------------------------------------------------
-
-The code-behind limits user-entered dimensions to 64--4096 pixels in
-each direction.
+The code-behind limits user-entered dimensions to 64–4096 pixels in each
+direction.
 
 The native creation API accepts dimensions up to 8192, but the current
 UI applies the stricter 4096 limit.
@@ -656,9 +589,9 @@ native safety checks.
 
 During a run, the status bar displays:
 
--   Simulation time.
--   Nucleus count.
--   Coverage percentage.
+- Simulation time.
+- Nucleus count.
+- Coverage percentage.
 
 When coverage reaches 100%, the application stops playback and displays
 a completion message.
@@ -672,7 +605,7 @@ The managed application locks the Avalonia `WriteableBitmap`, passes its
 address and row stride to `ms_render_rgba`, then invalidates the
 viewport.
 
-The native renderer therefore writes directly into the bitmap's locked
+The native renderer therefore writes directly into the bitmap’s locked
 memory, avoiding an additional managed-side per-pixel conversion loop.
 
 ------------------------------------------------------------------------
@@ -686,13 +619,12 @@ The top-level CMake file requires CMake 3.21 or newer and C++17.
 
 ## 6.1 Build dependencies
 
--   Windows 10/11 x64.
--   CMake 3.21 or newer.
--   Ninja.
--   MSVC x64 or MinGW-w64 GCC with C++17 support.
--   .NET 10 SDK.
--   NuGet access for the first restore unless packages are already
-    cached.
+- Windows 10/11 x64.
+- CMake 3.21 or newer.
+- Ninja.
+- MSVC x64 or MinGW-w64 GCC with C++17 support.
+- .NET 10 SDK.
+- NuGet access for the first restore unless packages are already cached.
 
 The managed project currently references Avalonia 12.1.4.
 
@@ -808,22 +740,22 @@ notices.
 A useful scientific software document should distinguish what the code
 computes from what a reader might infer physically.
 
-This chapter summarises the current model's scope and the limitations
+This chapter summarises the current model’s scope and the limitations
 stated or directly visible in the repository.
 
 ## 7.1 Assumptions in the current implementation
 
--   Two-dimensional rectangular domain represented by a regular pixel
-    grid.
--   Continuous stochastic nucleation sampled over discrete time steps.
--   Each grain has a fixed nucleation position, birth time and constant
-    radial growth velocity.
--   Growth is isotropic, so ideal fronts are circular.
--   Each pixel is assigned according to the smallest calculated arrival
-    time.
--   The continuous model is sampled at pixel centres.
--   Grain ownership is stored as a single integer index per pixel.
--   Simulation and rendering are serial in the current version.
+- Two-dimensional rectangular domain represented by a regular pixel
+  grid.
+- Continuous stochastic nucleation sampled over discrete time steps.
+- Each grain has a fixed nucleation position, birth time and constant
+  radial growth velocity.
+- Growth is isotropic, so ideal fronts are circular.
+- Each pixel is assigned according to the smallest calculated arrival
+  time.
+- The continuous model is sampled at pixel centres.
+- Grain ownership is stored as a single integer index per pixel.
+- Simulation and rendering are serial in the current version.
 
 ## 7.2 Interpretation of impingement
 
@@ -834,7 +766,7 @@ In this formulation, grain regions emerge from competition between
 arrival-time fields.
 
 It is not equivalent to explicitly simulating two moving interfaces that
-collide and physically block each other's subsequent propagation.
+collide and physically block each other’s subsequent propagation.
 
 That distinction motivated the proposed future option for an alternative
 impingement-limited model, but no such second model exists in the
@@ -878,26 +810,16 @@ Grain area statistics would require a separate count over the current
 
 ## 7.6 Known unimplemented capabilities
 
-  -----------------------------------------------------------------------
-  Capability                          Current status
-  ----------------------------------- -----------------------------------
-  OpenMP parallelism                  Not implemented; engine is serial
-
-  Spatial bins / neighbour            Listed as roadmap work; not
-  acceleration                        implemented
-
-  Active-grain tracking               Not implemented in this baseline
-
-  Second selectable growth model      Not implemented in this baseline
-
-  Shape-harmonic / anisotropic growth Roadmap item
-
-  Grain statistics and data export    Roadmap item
-
-  Background simulation worker        Roadmap item
-
-  VTK visualisation / 3D extensions   Roadmap item
-  -----------------------------------------------------------------------
+| Capability                            | Current status                          |
+|:--------------------------------------|:----------------------------------------|
+| OpenMP parallelism                    | Not implemented; engine is serial       |
+| Spatial bins / neighbour acceleration | Listed as roadmap work; not implemented |
+| Active-grain tracking                 | Not implemented in this baseline        |
+| Second selectable growth model        | Not implemented in this baseline        |
+| Shape-harmonic / anisotropic growth   | Roadmap item                            |
+| Grain statistics and data export      | Roadmap item                            |
+| Background simulation worker          | Roadmap item                            |
+| VTK visualisation / 3D extensions     | Roadmap item                            |
 
 ------------------------------------------------------------------------
 
@@ -940,7 +862,7 @@ circular-distance test is the narrow-phase geometric test.
 A rough way to reason about work is to consider, for each grain and each
 time step, the area of its bounding square.
 
-The exact number of candidate pixels depends on the grain's radius and
+The exact number of candidate pixels depends on the grain’s radius and
 its intersection with the domain.
 
 As grain count and radius increase, the total candidate work can become
@@ -950,18 +872,18 @@ Rendering separately traverses every pixel in the domain for each frame.
 
 ## 8.4 Safe optimisation principles
 
--   Keep the current implementation available as a reference path.
--   Use deterministic seeds and compare complete owner arrays when
-    validating optimisations.
--   Separate broad-phase spatial filtering from exact arrival-time
-    evaluation.
--   Do not permanently deactivate a grain merely because it captured no
-    pixel in one time step.
--   Do not infer physical enclosure from a raster ring unless the
-    selected growth model explicitly defines that rule.
--   Measure simulation-step time and render time separately.
--   Benchmark multiple domain sizes, nucleation rates and velocity
-    distributions.
+- Keep the current implementation available as a reference path.
+- Use deterministic seeds and compare complete owner arrays when
+  validating optimisations.
+- Separate broad-phase spatial filtering from exact arrival-time
+  evaluation.
+- Do not permanently deactivate a grain merely because it captured no
+  pixel in one time step.
+- Do not infer physical enclosure from a raster ring unless the selected
+  growth model explicitly defines that rule.
+- Measure simulation-step time and render time separately.
+- Benchmark multiple domain sizes, nucleation rates and velocity
+  distributions.
 
 ## 8.5 Candidate future techniques
 
@@ -1028,10 +950,10 @@ UI form a connected system.
 
 A change to the native state may require:
 
--   An exported API change.
--   A matching managed declaration.
--   A UI update.
--   Tests for the new behaviour.
+- An exported API change.
+- A matching managed declaration.
+- A UI update.
+- Tests for the new behaviour.
 
 Bundling several unrelated changes makes it harder to locate ABI
 mismatches, numerical regressions and UI lifecycle errors.
@@ -1040,39 +962,15 @@ Incremental changes keep the validation surface small.
 
 ## 9.3 Suggested test layers
 
-  -----------------------------------------------------------------------
-  Layer                               Suggested checks
-  ----------------------------------- -----------------------------------
-  Native API                          Null handles, invalid dimensions,
-                                      reset, parameter clamping,
-                                      finite/non-finite `dt`
-
-  Determinism                         Same seed and same sequence of `dt`
-                                      values produce identical owner and
-                                      arrival arrays
-
-  Numerics                            Check ownership against a slow
-                                      reference implementation on small
-                                      grids
-
-  Coverage                            Coverage remains in $[0,1]$, is
-                                      monotonic under
-                                      first-transformation counting, and
-                                      reaches 1 only when every pixel has
-                                      been visited
-
-  Rendering                           Stride handling, null destination,
-                                      boundary pixels, untransformed
-                                      background
-
-  Managed integration                 Create/destroy lifecycle, reset,
-                                      resize, pause/resume, completion
-                                      handling
-
-  Performance                         Measure step and render time
-                                      independently across representative
-                                      scenarios
-  -----------------------------------------------------------------------
+| Layer               | Suggested checks                                                                                                                    |
+|:--------------------|:------------------------------------------------------------------------------------------------------------------------------------|
+| Native API          | Null handles, invalid dimensions, reset, parameter clamping, finite/non-finite `dt`                                                 |
+| Determinism         | Same seed and same sequence of `dt` values produce identical owner and arrival arrays                                               |
+| Numerics            | Check ownership against a slow reference implementation on small grids                                                              |
+| Coverage            | Coverage remains in $[0,1]$, is monotonic under first-transformation counting, and reaches 1 only when every pixel has been visited |
+| Rendering           | Stride handling, null destination, boundary pixels, untransformed background                                                        |
+| Managed integration | Create/destroy lifecycle, reset, resize, pause/resume, completion handling                                                          |
+| Performance         | Measure step and render time independently across representative scenarios                                                          |
 
 ------------------------------------------------------------------------
 
@@ -1089,17 +987,17 @@ benchmarks.
 
 A benchmark suite should record:
 
--   Build configuration.
--   Compiler and version.
--   CPU.
--   Grid dimensions.
--   Random seed.
--   Nucleation rate.
--   Velocity interval.
--   Simulation duration.
--   Grain count.
--   Coverage.
--   Separate simulation-step and rendering timings.
+- Build configuration.
+- Compiler and version.
+- CPU.
+- Grid dimensions.
+- Random seed.
+- Nucleation rate.
+- Velocity interval.
+- Simulation duration.
+- Grain count.
+- Coverage.
+- Separate simulation-step and rendering timings.
 
 ## 10.2 Shape-harmonic and anisotropic growth
 
@@ -1115,12 +1013,12 @@ and has no orientation or harmonic coefficients.
 
 Useful future statistics include:
 
--   Current pixel area per grain.
--   Equivalent-circle radius.
--   Perimeter estimates.
--   Neighbour counts.
--   Grain-size distributions.
--   Time histories.
+- Current pixel area per grain.
+- Equivalent-circle radius.
+- Perimeter estimates.
+- Neighbour counts.
+- Grain-size distributions.
+- Time histories.
 
 Export should distinguish current ownership statistics from
 transformed-pixel coverage.
@@ -1141,11 +1039,11 @@ Moving simulation work off the UI thread can improve responsiveness.
 
 It requires a clear threading contract for:
 
--   Native simulation state.
--   Cancellation.
--   Reset.
--   Parameter updates.
--   Bitmap transfer.
+- Native simulation state.
+- Cancellation.
+- Reset.
+- Parameter updates.
+- Bitmap transfer.
 
 The UI should not read or render a native simulation concurrently with
 an uncoordinated step operation.
@@ -1166,68 +1064,40 @@ storage, visualisation and performance strategy.
 
 ## 11.1 Default simulation parameters
 
-  ------------------------------------------------------------------------
-  Parameter                                  Default Meaning
-  --------------------- ---------------------------- ---------------------
-  Domain                                800 × 600 px Raster dimensions in
-                                                     the UI
-
-  Nucleation rate                           0.000012 Nuclei per pixel per
-                                                     second
-
-  Minimum velocity                           35 px/s Lower bound of random
-                                                     grain velocity
-
-  Maximum velocity                           65 px/s Upper bound of random
-                                                     grain velocity
-
-  UI timer                                   \~33 ms DispatcherTimer
-                                                     interval
-
-  Native `dt` cap                             0.25 s Maximum time
-                                                     increment accepted
-                                                     per native step
-  ------------------------------------------------------------------------
+| Parameter        |      Default | Meaning                                         |
+|:-----------------|-------------:|:------------------------------------------------|
+| Domain           | 800 × 600 px | Raster dimensions in the UI                     |
+| Nucleation rate  |     0.000012 | Nuclei per pixel per second                     |
+| Minimum velocity |      35 px/s | Lower bound of random grain velocity            |
+| Maximum velocity |      65 px/s | Upper bound of random grain velocity            |
+| UI timer         |       ~33 ms | DispatcherTimer interval                        |
+| Native `dt` cap  |       0.25 s | Maximum time increment accepted per native step |
 
 These are demonstration values, not calibrated material parameters.
 
 ## 11.2 Important native implementation limits
 
--   Native `ms_create` rejects non-positive dimensions and dimensions
-    greater than 8192.
--   The UI currently restricts each dimension to 64--4096.
--   Native `ms_step` ignores non-finite or non-positive `dt` and caps
-    `dt` at 0.25 seconds.
--   Nucleation rate is clamped to $[0, 0.001]$.
--   Minimum velocity is clamped to $[0.1, 10000]$.
--   Maximum velocity is clamped to at least the current minimum and at
-    most 10000.
+- Native `ms_create` rejects non-positive dimensions and dimensions
+  greater than 8192.
+- The UI currently restricts each dimension to 64–4096.
+- Native `ms_step` ignores non-finite or non-positive `dt` and caps `dt`
+  at 0.25 seconds.
+- Nucleation rate is clamped to $[0, 0.001]$.
+- Minimum velocity is clamped to $[0.1, 10000]$.
+- Maximum velocity is clamped to at least the current minimum and at
+  most 10000.
 
 ## 11.3 Key source files
 
-  -----------------------------------------------------------------------
-  File                                What to inspect when...
-  ----------------------------------- -----------------------------------
-  `native/MicrostructureCore.cpp`     Changing nucleation, growth,
-                                      ownership, coverage or rendering
-
-  `native/MicrostructureCore.h`       Changing the exported C ABI
-
-  `managed/NativeMethods.cs`          Adding or changing P/Invoke
-                                      declarations
-
-  `managed/MainWindow.axaml`          Changing the visual layout and
-                                      controls
-
-  `managed/MainWindow.axaml.cs`       Changing UI behaviour, timer
-                                      lifecycle and native calls
-
-  `CMakeLists.txt`                    Changing project configuration and
-                                      publish orchestration
-
-  `native/CMakeLists.txt`             Changing native compiler/linker
-                                      options
-  -----------------------------------------------------------------------
+| File                            | What to inspect when…                                         |
+|:--------------------------------|:--------------------------------------------------------------|
+| `native/MicrostructureCore.cpp` | Changing nucleation, growth, ownership, coverage or rendering |
+| `native/MicrostructureCore.h`   | Changing the exported C ABI                                   |
+| `managed/NativeMethods.cs`      | Adding or changing P/Invoke declarations                      |
+| `managed/MainWindow.axaml`      | Changing the visual layout and controls                       |
+| `managed/MainWindow.axaml.cs`   | Changing UI behaviour, timer lifecycle and native calls       |
+| `CMakeLists.txt`                | Changing project configuration and publish orchestration      |
+| `native/CMakeLists.txt`         | Changing native compiler/linker options                       |
 
 ## 11.4 Public repository and documented baseline
 
@@ -1237,8 +1107,8 @@ Repository:
 
 Documented baseline:
 
--   Branch: `main`
--   Commit: `cfeb335067d62e0817c09cce010e6a4152f7c4f6`
+- Branch: `main`
+- Commit: `cfeb335067d62e0817c09cce010e6a4152f7c4f6`
 
 If the repository changes later, this book should be treated as
 documentation of that specific snapshot rather than an automatically
