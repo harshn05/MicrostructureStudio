@@ -22,7 +22,7 @@ Microstructure Studio couples a cross-platform-style .NET desktop UI with a stan
 
 ## Screenshot
 
-![Microstructure Studio](docs/screenshot.png)
+![Microstructure Studio Screenshot](docs/screenshot.png)
 
 
 ## Architecture
