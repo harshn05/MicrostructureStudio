@@ -89,7 +89,7 @@ The engine samples the continuous model at pixel centres and updates the newly s
 - .NET 10 SDK
 - Internet access for the first NuGet restore, unless dependencies are already available in the configured NuGet cache
 
-The managed project currently references Avalonia 11.3.10.
+The managed project currently references Avalonia 12.1.4.
 
 ## Build
 
