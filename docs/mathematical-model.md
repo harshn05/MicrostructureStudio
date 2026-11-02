@@ -36,7 +36,7 @@ $$
 Each point in the simulation domain is assigned to the grain with the earliest arrival time:
 
 $$
-G(x,y) = \underset{i}{\operatorname{arg\,min}}\;\tau_i(x,y)
+G(x,y) = \arg\min_i \tau_i(x,y)
 $$
 
 This determines grain ownership and naturally accounts for grain impingement.
