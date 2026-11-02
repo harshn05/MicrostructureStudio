@@ -1,0 +1,257 @@
+
+<Window
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    x:Class="MicrostructureStudio.MainWindow"
+    Title="Microstructure Studio"
+    Width="1240"
+    Height="820"
+    MinWidth="980"
+    MinHeight="680"
+    Background="#11151D"
+    Foreground="#E6EAF0">
+
+    <Window.Styles>
+
+        <Style Selector="TextBlock.section">
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="#9AA8BA"/>
+        </Style>
+
+        <Style Selector="TextBox">
+            <Setter Property="Background" Value="#171E29"/>
+            <Setter Property="Foreground" Value="#F0F3F8"/>
+            <Setter Property="BorderBrush" Value="#354153"/>
+            <Setter Property="Padding" Value="9,7"/>
+        </Style>
+
+        <Style Selector="Button">
+            <Setter Property="Background" Value="#273449"/>
+            <Setter Property="Foreground" Value="#F3F6FA"/>
+            <Setter Property="Padding" Value="12,8"/>
+        </Style>
+
+        <Style Selector="Button.primary">
+            <Setter Property="Background" Value="#3978D5"/>
+        </Style>
+
+    </Window.Styles>
+
+    <Grid RowDefinitions="Auto,*,Auto">
+
+        <!-- Header -->
+        <Border
+            Background="#171E29"
+            Padding="20,14">
+
+            <Grid ColumnDefinitions="*,Auto">
+
+                <StackPanel Spacing="3">
+                    <TextBlock
+                        Text="MICROSTRUCTURE STUDIO"
+                        FontSize="17"
+                        FontWeight="Bold"/>
+
+                    <TextBlock
+                        Text="Continuous nucleation · Kinetic grain growth"
+                        FontSize="12"
+                        Foreground="#91A0B4"/>
+                </StackPanel>
+
+                <TextBlock
+                    Grid.Column="1"
+                    Text="NATIVE C++ ENGINE"
+                    Foreground="#8DBBFF"
+                    VerticalAlignment="Center"/>
+
+            </Grid>
+        </Border>
+
+        <!-- Main Content -->
+        <Grid
+            Grid.Row="1"
+            ColumnDefinitions="270,*"
+            Margin="14"
+            ColumnSpacing="14">
+
+            <!-- Left Control Panel -->
+            <Border
+                Grid.Column="0"
+                Background="#171E29"
+                BorderBrush="#293445"
+                BorderThickness="1"
+                CornerRadius="8"
+                Padding="16">
+
+                <ScrollViewer>
+
+                    <StackPanel Spacing="13">
+
+                        <TextBlock
+                            Text="SIMULATION CONTROLS"
+                            Classes="section"/>
+
+                        <!-- Domain Resolution -->
+                        <TextBlock
+                            Text="DOMAIN RESOLUTION"
+                            Classes="section"/>
+
+                        <Grid
+                            ColumnDefinitions="*,*"
+                            ColumnSpacing="8">
+
+                            <StackPanel Spacing="4">
+                                <TextBlock
+                                    Text="X pixels"
+                                    FontSize="11"/>
+
+                                <TextBox
+                                    x:Name="XPixelsBox"
+                                    Text="800"/>
+                            </StackPanel>
+
+                            <StackPanel
+                                Grid.Column="1"
+                                Spacing="4">
+
+                                <TextBlock
+                                    Text="Y pixels"
+                                    FontSize="11"/>
+
+                                <TextBox
+                                    x:Name="YPixelsBox"
+                                    Text="600"/>
+                            </StackPanel>
+
+                        </Grid>
+
+                        <Button
+                            x:Name="ApplyDimensionsButton"
+                            Content="Apply resolution"/>
+
+                        <TextBlock
+                            x:Name="DimensionLabel"
+                            Text="800 × 600 px"
+                            FontSize="11"
+                            Foreground="#91A0B4"/>
+
+                        <!-- Growth Parameters -->
+                        <TextBlock
+                            Text="GROWTH PARAMETERS"
+                            Classes="section"/>
+
+                        <TextBlock
+                            Text="Nucleation rate (nuclei/pixel/s)"/>
+
+                        <TextBox
+                            x:Name="RateBox"
+                            Text="0.000012"/>
+
+                        <TextBlock
+                            Text="Minimum growth velocity (px/s)"/>
+
+                        <TextBox
+                            x:Name="MinVelocityBox"
+                            Text="35"/>
+
+                        <TextBlock
+                            Text="Maximum growth velocity (px/s)"/>
+
+                        <TextBox
+                            x:Name="MaxVelocityBox"
+                            Text="65"/>
+
+                        <Button
+                            x:Name="ApplyButton"
+                            Content="Apply parameters"/>
+
+                        <!-- Playback -->
+                        <TextBlock
+                            Text="PLAYBACK"
+                            Classes="section"/>
+
+                        <Grid
+                            ColumnDefinitions="*,*"
+                            ColumnSpacing="8">
+
+                            <Button
+                                x:Name="StartButton"
+                                Content="▶ Start"
+                                Classes="primary"/>
+
+                            <Button
+                                x:Name="ResetButton"
+                                Grid.Column="1"
+                                Content="↺ Reset"/>
+
+                        </Grid>
+
+                        <!-- Model Description -->
+                        <TextBlock
+                            Text="MODEL"
+                            Classes="section"/>
+
+                        <TextBlock
+                            Text="• Continuous stochastic nucleation"/>
+
+                        <TextBlock
+                            Text="• Isotropic radial growth"/>
+
+                        <TextBlock
+                            Text="• Earliest-arrival grain ownership"/>
+
+                        <TextBlock
+                            Text="• Grain impingement"/>
+
+                    </StackPanel>
+
+                </ScrollViewer>
+
+            </Border>
+
+            <!-- Simulation Viewport -->
+            <Grid
+                Grid.Column="1"
+                RowDefinitions="Auto,*">
+
+                <TextBlock
+                    Text="SIMULATION VIEWPORT"
+                    Classes="section"
+                    Margin="2,0,0,10"/>
+
+                <Border
+                    Grid.Row="1"
+                    Background="#090C11"
+                    BorderBrush="#293445"
+                    BorderThickness="1"
+                    CornerRadius="8"
+                    Padding="10">
+
+                    <Image
+                        x:Name="Viewport"
+                        Stretch="Uniform"/>
+
+                </Border>
+
+            </Grid>
+
+        </Grid>
+
+        <!-- Status Bar -->
+        <Border
+            Grid.Row="2"
+            Background="#171E29"
+            Padding="16,9">
+
+            <TextBlock
+                x:Name="StatusText"
+                Text="Ready"
+                FontSize="11"
+                Foreground="#B7C2D0"/>
+
+        </Border>
+
+    </Grid>
+
+</Window>

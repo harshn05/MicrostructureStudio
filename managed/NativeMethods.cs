@@ -4,33 +4,66 @@ namespace MicrostructureStudio;
 
 internal static class NativeMethods
 {
-    private const string Library = "MicrostructureCore.dll";
+    private const string Dll = "MicrostructureCore.dll";
 
-    [DllImport(Library, CallingConvention = CallingConvention.Cdecl, EntryPoint = "ms_create")]
-    internal static extern IntPtr Create(int width, int height, uint seed);
+    [DllImport(
+        Dll,
+        CallingConvention = CallingConvention.Cdecl,
+        EntryPoint = "ms_create")]
+    internal static extern IntPtr Create(int w, int h, uint seed);
 
-    [DllImport(Library, CallingConvention = CallingConvention.Cdecl, EntryPoint = "ms_destroy")]
-    internal static extern void Destroy(IntPtr simulation);
+    [DllImport(
+        Dll,
+        CallingConvention = CallingConvention.Cdecl,
+        EntryPoint = "ms_destroy")]
+    internal static extern void Destroy(IntPtr p);
 
-    [DllImport(Library, CallingConvention = CallingConvention.Cdecl, EntryPoint = "ms_reset")]
-    internal static extern void Reset(IntPtr simulation, uint seed);
+    [DllImport(
+        Dll,
+        CallingConvention = CallingConvention.Cdecl,
+        EntryPoint = "ms_reset")]
+    internal static extern void Reset(IntPtr p, uint seed);
 
-    [DllImport(Library, CallingConvention = CallingConvention.Cdecl, EntryPoint = "ms_set_parameters")]
-    internal static extern void SetParameters(IntPtr simulation, double nucleationRate,
-        double minGrowthVelocity, double maxGrowthVelocity);
+    [DllImport(
+        Dll,
+        CallingConvention = CallingConvention.Cdecl,
+        EntryPoint = "ms_set_parameters")]
+    internal static extern void SetParameters(
+        IntPtr p,
+        double rate,
+        double min,
+        double max);
 
-    [DllImport(Library, CallingConvention = CallingConvention.Cdecl, EntryPoint = "ms_step")]
-    internal static extern void Step(IntPtr simulation, double deltaTime);
+    [DllImport(
+        Dll,
+        CallingConvention = CallingConvention.Cdecl,
+        EntryPoint = "ms_step")]
+    internal static extern void Step(IntPtr p, double dt);
 
-    [DllImport(Library, CallingConvention = CallingConvention.Cdecl, EntryPoint = "ms_render_rgba")]
-    internal static extern void RenderRgba(IntPtr simulation, IntPtr destination, int stride);
+    [DllImport(
+        Dll,
+        CallingConvention = CallingConvention.Cdecl,
+        EntryPoint = "ms_render_rgba")]
+    internal static extern void RenderRgba(
+        IntPtr p,
+        IntPtr dst,
+        int stride);
 
-    [DllImport(Library, CallingConvention = CallingConvention.Cdecl, EntryPoint = "ms_get_nucleus_count")]
-    internal static extern int GetNucleusCount(IntPtr simulation);
+    [DllImport(
+        Dll,
+        CallingConvention = CallingConvention.Cdecl,
+        EntryPoint = "ms_get_nucleus_count")]
+    internal static extern int GetNucleusCount(IntPtr p);
 
-    [DllImport(Library, CallingConvention = CallingConvention.Cdecl, EntryPoint = "ms_get_simulation_time")]
-    internal static extern double GetSimulationTime(IntPtr simulation);
+    [DllImport(
+        Dll,
+        CallingConvention = CallingConvention.Cdecl,
+        EntryPoint = "ms_get_simulation_time")]
+    internal static extern double GetSimulationTime(IntPtr p);
 
-    [DllImport(Library, CallingConvention = CallingConvention.Cdecl, EntryPoint = "ms_get_coverage")]
-    internal static extern double GetCoverage(IntPtr simulation);
+    [DllImport(
+        Dll,
+        CallingConvention = CallingConvention.Cdecl,
+        EntryPoint = "ms_get_coverage")]
+    internal static extern double GetCoverage(IntPtr p);
 }
