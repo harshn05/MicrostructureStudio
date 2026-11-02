@@ -1,46 +1,51 @@
-# Mathematical model
 
-## Continuous nucleation
+## Mathematical Model
 
-Nucleation events are sampled from a spatially uniform Poisson process. For domain area \(A\), nucleation rate \(I\) (nuclei per pixel per second), and time increment \(\Delta t\):
+### 1. Continuous Stochastic Nucleation
 
-\[
-N_{\mathrm{new}} \sim \operatorname{Poisson}(I A \Delta t)
-\]
+For a simulation area \(A\), nucleation rate \(\lambda\), and time interval \(\Delta t\), the number of newly nucleated grains follows a Poisson distribution:
 
-Each new nucleus receives a uniformly sampled position in the 2D domain, a birth time uniformly sampled within the current step, a growth velocity sampled from the configured interval, and a display colour.
+$$
+N_{\mathrm{new}} \sim \mathrm{Poisson}(\lambda A \Delta t)
+$$
 
-## Isotropic growth
+### 2. Isotropic Radial Growth
 
-For nucleus \(i\), with position \((x_i,y_i)\), birth time \(t_i\), and constant radial growth velocity \(v_i\), the radius is:
+A nucleus born at position \((x_i, y_i)\) and time \(t_i\) grows radially at a constant velocity \(v_i\). Its radius at time \(t\) is:
 
-\[
-R_i(t) = v_i(t-t_i), \qquad t \geq t_i
-\]
+$$
+R_i(t) = v_i(t - t_i)
+$$
 
-The arrival time at a point \((x,y)\) is:
+### 3. Grain Arrival Time
 
-\[
-\tau_i(x,y) = t_i +
-\frac{\sqrt{(x-x_i)^2+(y-y_i)^2}}{v_i}
-\]
+The arrival time of grain \(i\) at a point \((x,y)\) is:
 
-The pixel is assigned to the grain with the smallest arrival time:
+$$
+\tau_i(x,y) =
+t_i +
+\frac{
+    \sqrt{(x-x_i)^2 + (y-y_i)^2}
+}{
+    v_i
+}
+$$
 
-\[
-G(x,y) = \underset{i}{\operatorname{argmin}}\;\tau_i(x,y)
-\]
+### 4. Grain Ownership and Impingement
 
-This is a kinetic, additively weighted Voronoi construction (often described as a Johnson-Mehl-type growth model for continuous nucleation).
+Each point in the simulation domain is assigned to the grain with the earliest arrival time:
 
-## Numerical implementation
+$$
+G(x,y) = \underset{i}{\operatorname{arg\,min}}\;\tau_i(x,y)
+$$
 
-The domain is sampled at pixel centres. For each time step, the engine visits only the newly swept annulus between the previous and current radius of each grain. The stored arrival-time field ensures that the earliest arriving grain owns each pixel.
+This determines grain ownership and naturally accounts for grain impingement.
 
-Grain boundaries in the current renderer are detected from changes in neighbouring pixel ownership.
+### Model Characteristics
 
-## Scope and limitations
+The resulting model is an **isotropic, constant-velocity, kinetic Voronoi-like growth model** with continuous stochastic nucleation and grain impingement.
 
-This is an isotropic, constant-velocity growth model with impingement. It is not a phase-field model and does not simulate curvature-driven grain-boundary migration, orientation-dependent mobility, anisotropic interfacial energy, or elastic effects. Pixel resolution and time-step size affect the discretized result.
+It is important to distinguish this approach from:
 
-The current engine advances on the UI timer and is intended as a compact interactive demonstrator. Large domains or high nucleation rates will benefit from spatial acceleration and moving simulation work off the UI thread.
+- Curvature-driven grain-boundary migration.
+- Phase-field models.
